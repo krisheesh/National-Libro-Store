@@ -7,6 +7,7 @@
     <title>Book List</title>
 </head>
 <body>
+    <img src="{{ asset('National Libro Store.png') }}" alt="Logo" style="height: 60px; margin-bottom: 20px; margin-top: 20px;">
     <h1>All Books</h1>
 
     @if($books->isEmpty())
