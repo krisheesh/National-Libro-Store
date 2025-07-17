@@ -18,56 +18,64 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\BookController;
 
-/**
-    * Show Task Dashboard
-    */
+// ...existing code...
 Route::get('/', function () {
-    Log::info("Get /");
-    $startTime = microtime(true);
-    // Simple cache-aside logic
-    if (Cache::has('tasks')) {
-        $data = Cache::get('tasks');
-    } else {
-        $data = Task::orderBy('created_at', 'asc')->get();
-        Cache::add('tasks', $data);
-    }
-    return view('tasks', ['tasks' => $data, 'elapsed' => microtime(true) - $startTime]);
+    return view('welcome');
 });
 
-/**
-    * Add New Task
-    */
-Route::post('/task', function (Request $request) {
-    Log::info("Post /task");
-    $validator = Validator::make($request->all(), [
-        'name' => 'required|max:255',
-    ]);
+Route::get('/books', [BookController::class, 'index'])->name('books.index');
+Route::get('/books/{book}', [BookController::class, 'show'])->name('books.show');
+// /**
+//     * Show Task Dashboard
+//     */
+// Route::get('/', function () {
+//     Log::info("Get /");
+//     $startTime = microtime(true);
+//     // Simple cache-aside logic
+//     if (Cache::has('tasks')) {
+//         $data = Cache::get('tasks');
+//     } else {
+//         $data = Task::orderBy('created_at', 'asc')->get();
+//         Cache::add('tasks', $data);
+//     }
+//     return view('tasks', ['tasks' => $data, 'elapsed' => microtime(true) - $startTime]);
+// });
 
-    if ($validator->fails()) {
-        Log::error("Add task failed.");
-        return redirect('/')
-            ->withInput()
-            ->withErrors($validator);
-    }
+// /**
+//     * Add New Task
+//     */
+// Route::post('/task', function (Request $request) {
+//     Log::info("Post /task");
+//     $validator = Validator::make($request->all(), [
+//         'name' => 'required|max:255',
+//     ]);
 
-    $task = new Task;
-    $task->name = $request->name;
-    $task->save();
-    // Clear the cache
-    Cache::flush();
+//     if ($validator->fails()) {
+//         Log::error("Add task failed.");
+//         return redirect('/')
+//             ->withInput()
+//             ->withErrors($validator);
+//     }
 
-    return redirect('/');
-});
+//     $task = new Task;
+//     $task->name = $request->name;
+//     $task->save();
+//     // Clear the cache
+//     Cache::flush();
 
-/**
-    * Delete Task
-    */
-Route::delete('/task/{id}', function ($id) {
-    Log::info('Delete /task/'.$id);
-    Task::findOrFail($id)->delete();
-    // Clear the cache
-    Cache::flush();
+//     return redirect('/');
+// });
 
-    return redirect('/');
-});
+// /**
+//     * Delete Task
+//     */
+// Route::delete('/task/{id}', function ($id) {
+//     Log::info('Delete /task/'.$id);
+//     Task::findOrFail($id)->delete();
+//     // Clear the cache
+//     Cache::flush();
+
+//     return redirect('/');
+// });
